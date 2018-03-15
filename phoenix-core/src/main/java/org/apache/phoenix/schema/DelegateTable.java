@@ -206,7 +206,7 @@ public class DelegateTable implements PTable {
     }
 
     @Override
-    public Short getViewIndexId() {
+    public Long getViewIndexId() {
         return delegate.getViewIndexId();
     }
 

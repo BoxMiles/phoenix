@@ -157,7 +157,7 @@ public abstract class MetaDataProtocol extends MetaDataService {
         private PName tableName;
         private List<PColumn> columns;
         private List<PName> physicalNames;
-        private Short viewIndexId;
+        private Long viewIndexId;
         
         public SharedTableState(PTable table) {
             this.tenantId = table.getTenantId();
@@ -187,7 +187,7 @@ public abstract class MetaDataProtocol extends MetaDataService {
                     return PNameFactory.newName(physicalName.toByteArray());
                 }
             });
-            this.viewIndexId = (short)sharedTable.getViewIndexId();
+            this.viewIndexId = sharedTable.getViewIndexId();
         }
 
         public PName getTenantId() {
@@ -210,7 +210,7 @@ public abstract class MetaDataProtocol extends MetaDataService {
             return physicalNames;
         }
 
-        public Short getViewIndexId() {
+        public Long getViewIndexId() {
             return viewIndexId;
         }
         
@@ -226,7 +226,7 @@ public abstract class MetaDataProtocol extends MetaDataService {
         private byte[] familyName;
         private boolean wasUpdated;
         private PSchema schema;
-        private Short viewIndexId;
+        private Long viewIndexId;
 
         private List<PFunction> functions = new ArrayList<PFunction>(1);
         private long autoPartitionNum;
@@ -272,9 +272,9 @@ public abstract class MetaDataProtocol extends MetaDataService {
             this.tableNamesToDelete = tableNamesToDelete;
         }
         
-        public MetaDataMutationResult(MutationCode returnCode, int currentTime, PTable table, int viewIndexId) {
+        public MetaDataMutationResult(MutationCode returnCode, int currentTime, PTable table, long viewIndexId) {
             this(returnCode, currentTime, table, Collections.<byte[]> emptyList());
-            this.viewIndexId = (short)viewIndexId;
+            this.viewIndexId = viewIndexId;
         }
         
         public MetaDataMutationResult(MutationCode returnCode, long currentTime, PTable table, List<byte[]> tableNamesToDelete, List<SharedTableState> sharedTablesToDelete) {
@@ -330,7 +330,7 @@ public abstract class MetaDataProtocol extends MetaDataService {
             return autoPartitionNum;
         }
         
-        public Short getViewIndexId() {
+        public Long getViewIndexId() {
             return viewIndexId;
         }
 
@@ -375,9 +375,9 @@ public abstract class MetaDataProtocol extends MetaDataService {
           if (proto.hasAutoPartitionNum()) {
               result.autoPartitionNum = proto.getAutoPartitionNum();
           }
-            if (proto.hasViewIndexId()) {
-                result.viewIndexId = (short)proto.getViewIndexId();
-            }
+          if (proto.hasViewIndexId()) {
+            result.viewIndexId = proto.getViewIndexId();
+          }
           return result;
         }
 

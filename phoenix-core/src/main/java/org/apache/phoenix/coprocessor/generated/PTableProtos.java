@@ -3331,15 +3331,15 @@ public final class PTableProtos {
      */
     com.google.protobuf.ByteString getTenantId();
 
-    // optional int32 viewIndexId = 21;
+    // optional int64 viewIndexId = 21;
     /**
-     * <code>optional int32 viewIndexId = 21;</code>
+     * <code>optional int64 viewIndexId = 21;</code>
      */
     boolean hasViewIndexId();
     /**
-     * <code>optional int32 viewIndexId = 21;</code>
+     * <code>optional int64 viewIndexId = 21;</code>
      */
-    int getViewIndexId();
+    long getViewIndexId();
 
     // optional bytes indexType = 22;
     /**
@@ -3685,7 +3685,7 @@ public final class PTableProtos {
             }
             case 168: {
               bitField0_ |= 0x00010000;
-              viewIndexId_ = input.readInt32();
+              viewIndexId_ = input.readInt64();
               break;
             }
             case 178: {
@@ -4215,19 +4215,19 @@ public final class PTableProtos {
       return tenantId_;
     }
 
-    // optional int32 viewIndexId = 21;
+    // optional int64 viewIndexId = 21;
     public static final int VIEWINDEXID_FIELD_NUMBER = 21;
-    private int viewIndexId_;
+    private long viewIndexId_;
     /**
-     * <code>optional int32 viewIndexId = 21;</code>
+     * <code>optional int64 viewIndexId = 21;</code>
      */
     public boolean hasViewIndexId() {
       return ((bitField0_ & 0x00010000) == 0x00010000);
     }
     /**
-     * <code>optional int32 viewIndexId = 21;</code>
+     * <code>optional int64 viewIndexId = 21;</code>
      */
-    public int getViewIndexId() {
+    public long getViewIndexId() {
       return viewIndexId_;
     }
 
@@ -4554,7 +4554,7 @@ public final class PTableProtos {
       viewStatement_ = com.google.protobuf.ByteString.EMPTY;
       physicalNames_ = java.util.Collections.emptyList();
       tenantId_ = com.google.protobuf.ByteString.EMPTY;
-      viewIndexId_ = 0;
+      viewIndexId_ = 0L;
       indexType_ = com.google.protobuf.ByteString.EMPTY;
       statsTimeStamp_ = 0L;
       storeNulls_ = false;
@@ -4696,7 +4696,7 @@ public final class PTableProtos {
         output.writeBytes(20, tenantId_);
       }
       if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        output.writeInt32(21, viewIndexId_);
+        output.writeInt64(21, viewIndexId_);
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         output.writeBytes(22, indexType_);
@@ -4838,7 +4838,7 @@ public final class PTableProtos {
       }
       if (((bitField0_ & 0x00010000) == 0x00010000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(21, viewIndexId_);
+          .computeInt64Size(21, viewIndexId_);
       }
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         size += com.google.protobuf.CodedOutputStream
@@ -5186,7 +5186,7 @@ public final class PTableProtos {
       }
       if (hasViewIndexId()) {
         hash = (37 * hash) + VIEWINDEXID_FIELD_NUMBER;
-        hash = (53 * hash) + getViewIndexId();
+        hash = (53 * hash) + hashLong(getViewIndexId());
       }
       if (hasIndexType()) {
         hash = (37 * hash) + INDEXTYPE_FIELD_NUMBER;
@@ -5410,7 +5410,7 @@ public final class PTableProtos {
         bitField0_ = (bitField0_ & ~0x00020000);
         tenantId_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00040000);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00080000);
         indexType_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00100000);
@@ -7099,35 +7099,35 @@ public final class PTableProtos {
         return this;
       }
 
-      // optional int32 viewIndexId = 21;
-      private int viewIndexId_ ;
+      // optional int64 viewIndexId = 21;
+      private long viewIndexId_ ;
       /**
-       * <code>optional int32 viewIndexId = 21;</code>
+       * <code>optional int64 viewIndexId = 21;</code>
        */
       public boolean hasViewIndexId() {
         return ((bitField0_ & 0x00080000) == 0x00080000);
       }
       /**
-       * <code>optional int32 viewIndexId = 21;</code>
+       * <code>optional int64 viewIndexId = 21;</code>
        */
-      public int getViewIndexId() {
+      public long getViewIndexId() {
         return viewIndexId_;
       }
       /**
-       * <code>optional int32 viewIndexId = 21;</code>
+       * <code>optional int64 viewIndexId = 21;</code>
        */
-      public Builder setViewIndexId(int value) {
+      public Builder setViewIndexId(long value) {
         bitField0_ |= 0x00080000;
         viewIndexId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 viewIndexId = 21;</code>
+       * <code>optional int64 viewIndexId = 21;</code>
        */
       public Builder clearViewIndexId() {
         bitField0_ = (bitField0_ & ~0x00080000);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         onChanged();
         return this;
       }
@@ -8599,7 +8599,7 @@ public final class PTableProtos {
       "\016 \001(\014\022\022\n\ndisableWAL\030\017 \002(\010\022\023\n\013multiTenant" +
       "\030\020 \002(\010\022\020\n\010viewType\030\021 \001(\014\022\025\n\rviewStatemen" +
       "t\030\022 \001(\014\022\025\n\rphysicalNames\030\023 \003(\014\022\020\n\010tenant" +
-      "Id\030\024 \001(\014\022\023\n\013viewIndexId\030\025 \001(\005\022\021\n\tindexTy" +
+      "Id\030\024 \001(\014\022\023\n\013viewIndexId\030\025 \001(\003\022\021\n\tindexTy" +
       "pe\030\026 \001(\014\022\026\n\016statsTimeStamp\030\027 \001(\003\022\022\n\nstor" +
       "eNulls\030\030 \001(\010\022\027\n\017baseColumnCount\030\031 \001(\005\022\036\n" +
       "\026rowKeyOrderOptimizable\030\032 \001(\010\022\025\n\rtransac" +

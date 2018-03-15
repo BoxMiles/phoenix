@@ -136,7 +136,7 @@ public class PTableImpl implements PTable {
     private boolean storeNulls;
     private boolean isTransactional;
     private ViewType viewType;
-    private Short viewIndexId;
+    private Long viewIndexId;
     private int estimatedSize;
     private IndexType indexType;
     private int baseColumnCount;
@@ -212,7 +212,7 @@ public class PTableImpl implements PTable {
     
     // For indexes stored in shared physical tables
     public PTableImpl(PName tenantId, PName schemaName, PName tableName, long timestamp, List<PColumnFamily> families, 
-            List<PColumn> columns, List<PName> physicalNames, Short viewIndexId, boolean multiTenant, boolean isNamespaceMpped, ImmutableStorageScheme storageScheme, QualifierEncodingScheme qualifierEncodingScheme, 
+            List<PColumn> columns, List<PName> physicalNames, Long viewIndexId, boolean multiTenant, boolean isNamespaceMpped, ImmutableStorageScheme storageScheme, QualifierEncodingScheme qualifierEncodingScheme,
             EncodedCQCounter encodedCQCounter, Boolean useStatsForParallelization) throws SQLException {
         this.pkColumns = this.allColumns = Collections.emptyList();
         this.rowKeySchema = RowKeySchema.EMPTY_SCHEMA;
@@ -382,7 +382,7 @@ public class PTableImpl implements PTable {
             PIndexState state, long timeStamp, long sequenceNumber, PName pkName, Integer bucketNum,
             Collection<PColumn> columns, PName dataSchemaName, PName dataTableName, List<PTable> indexes,
             boolean isImmutableRows, List<PName> physicalNames, PName defaultFamilyName, String viewExpression,
-            boolean disableWAL, boolean multiTenant, boolean storeNulls, ViewType viewType, Short viewIndexId,
+            boolean disableWAL, boolean multiTenant, boolean storeNulls, ViewType viewType, Long viewIndexId,
             IndexType indexType, boolean rowKeyOrderOptimizable, boolean isTransactional, long updateCacheFrequency,
             long indexDisableTimestamp, boolean isNamespaceMapped, String autoPartitionSeqName, boolean isAppendOnlySchema, ImmutableStorageScheme storageScheme, QualifierEncodingScheme qualifierEncodingScheme, EncodedCQCounter encodedCQCounter, Boolean useStatsForParallelization) throws SQLException {
         return new PTableImpl(tenantId, schemaName, tableName, type, state, timeStamp, sequenceNumber, pkName, bucketNum, columns, dataSchemaName,
@@ -396,7 +396,7 @@ public class PTableImpl implements PTable {
             PIndexState state, long timeStamp, long sequenceNumber, PName pkName, Integer bucketNum,
             Collection<PColumn> columns, PName dataSchemaName, PName dataTableName, List<PTable> indexes,
             boolean isImmutableRows, List<PName> physicalNames, PName defaultFamilyName, String viewExpression,
-            boolean disableWAL, boolean multiTenant, boolean storeNulls, ViewType viewType, Short viewIndexId,
+            boolean disableWAL, boolean multiTenant, boolean storeNulls, ViewType viewType, Long viewIndexId,
             IndexType indexType, boolean rowKeyOrderOptimizable, boolean isTransactional, long updateCacheFrequency,
             int baseColumnCount, long indexDisableTimestamp, boolean isNamespaceMapped,
             String autoPartitionSeqName, boolean isAppendOnlySchema, ImmutableStorageScheme storageScheme,
@@ -413,7 +413,7 @@ public class PTableImpl implements PTable {
             long timeStamp, long sequenceNumber, PName pkName, Integer bucketNum, Collection<PColumn> columns,
             PName parentSchemaName, PName parentTableName, List<PTable> indexes, boolean isImmutableRows,
             List<PName> physicalNames, PName defaultFamilyName, String viewExpression, boolean disableWAL, boolean multiTenant,
-            boolean storeNulls, ViewType viewType, Short viewIndexId, IndexType indexType,
+            boolean storeNulls, ViewType viewType, Long viewIndexId, IndexType indexType,
             int baseColumnCount, boolean rowKeyOrderOptimizable, boolean isTransactional, long updateCacheFrequency,
             long indexDisableTimestamp, boolean isNamespaceMapped, String autoPartitionSeqName, boolean isAppendOnlySchema, ImmutableStorageScheme storageScheme, 
             QualifierEncodingScheme qualifierEncodingScheme, EncodedCQCounter encodedCQCounter, Boolean useStatsForParallelization) throws SQLException {
@@ -453,7 +453,7 @@ public class PTableImpl implements PTable {
     private void init(PName tenantId, PName schemaName, PName tableName, PTableType type, PIndexState state, long timeStamp, long sequenceNumber,
             PName pkName, Integer bucketNum, Collection<PColumn> columns, PName parentSchemaName, PName parentTableName,
             List<PTable> indexes, boolean isImmutableRows, List<PName> physicalNames, PName defaultFamilyName, String viewExpression, boolean disableWAL,
-            boolean multiTenant, boolean storeNulls, ViewType viewType, Short viewIndexId,
+            boolean multiTenant, boolean storeNulls, ViewType viewType, Long viewIndexId,
             IndexType indexType , int baseColumnCount, boolean rowKeyOrderOptimizable, boolean isTransactional, long updateCacheFrequency, long indexDisableTimestamp, 
             boolean isNamespaceMapped, String autoPartitionSeqName, boolean isAppendOnlySchema, ImmutableStorageScheme storageScheme, QualifierEncodingScheme qualifierEncodingScheme, 
             EncodedCQCounter encodedCQCounter, Boolean useStatsForParallelization) throws SQLException {
@@ -1210,7 +1210,7 @@ public class PTableImpl implements PTable {
     }
 
     @Override
-    public Short getViewIndexId() {
+    public Long getViewIndexId() {
         return viewIndexId;
     }
 
@@ -1240,9 +1240,9 @@ public class PTableImpl implements PTable {
         if (table.hasIndexState()) {
             indexState = PIndexState.fromSerializedValue(table.getIndexState());
         }
-        Short viewIndexId = null;
+        Long viewIndexId = null;
         if(table.hasViewIndexId()){
-            viewIndexId = (short)table.getViewIndexId();
+            viewIndexId = table.getViewIndexId();
         }
         IndexType indexType = IndexType.getDefault();
         if(table.hasIndexType()){

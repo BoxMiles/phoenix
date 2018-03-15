@@ -351,15 +351,15 @@ public final class MetaDataProtos {
      */
     com.google.protobuf.ByteString getPhysicalNames(int index);
 
-    // required int32 viewIndexId = 6;
+    // required int64 viewIndexId = 6;
     /**
-     * <code>required int32 viewIndexId = 6;</code>
+     * <code>required int64 viewIndexId = 6;</code>
      */
     boolean hasViewIndexId();
     /**
-     * <code>required int32 viewIndexId = 6;</code>
+     * <code>required int64 viewIndexId = 6;</code>
      */
-    int getViewIndexId();
+    long getViewIndexId();
   }
   /**
    * Protobuf type {@code SharedTableState}
@@ -445,7 +445,7 @@ public final class MetaDataProtos {
             }
             case 48: {
               bitField0_ |= 0x00000008;
-              viewIndexId_ = input.readInt32();
+              viewIndexId_ = input.readInt64();
               break;
             }
           }
@@ -601,19 +601,19 @@ public final class MetaDataProtos {
       return physicalNames_.get(index);
     }
 
-    // required int32 viewIndexId = 6;
+    // required int64 viewIndexId = 6;
     public static final int VIEWINDEXID_FIELD_NUMBER = 6;
-    private int viewIndexId_;
+    private long viewIndexId_;
     /**
-     * <code>required int32 viewIndexId = 6;</code>
+     * <code>required int64 viewIndexId = 6;</code>
      */
     public boolean hasViewIndexId() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required int32 viewIndexId = 6;</code>
+     * <code>required int64 viewIndexId = 6;</code>
      */
-    public int getViewIndexId() {
+    public long getViewIndexId() {
       return viewIndexId_;
     }
 
@@ -623,7 +623,7 @@ public final class MetaDataProtos {
       tableName_ = com.google.protobuf.ByteString.EMPTY;
       columns_ = java.util.Collections.emptyList();
       physicalNames_ = java.util.Collections.emptyList();
-      viewIndexId_ = 0;
+      viewIndexId_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -671,7 +671,7 @@ public final class MetaDataProtos {
         output.writeBytes(5, physicalNames_.get(i));
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(6, viewIndexId_);
+        output.writeInt64(6, viewIndexId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -709,7 +709,7 @@ public final class MetaDataProtos {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, viewIndexId_);
+          .computeInt64Size(6, viewIndexId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -793,7 +793,7 @@ public final class MetaDataProtos {
       }
       if (hasViewIndexId()) {
         hash = (37 * hash) + VIEWINDEXID_FIELD_NUMBER;
-        hash = (53 * hash) + getViewIndexId();
+        hash = (53 * hash) + hashLong(getViewIndexId());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -919,7 +919,7 @@ public final class MetaDataProtos {
         }
         physicalNames_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
@@ -1508,35 +1508,35 @@ public final class MetaDataProtos {
         return this;
       }
 
-      // required int32 viewIndexId = 6;
-      private int viewIndexId_ ;
+      // required int64 viewIndexId = 6;
+      private long viewIndexId_ ;
       /**
-       * <code>required int32 viewIndexId = 6;</code>
+       * <code>required int64 viewIndexId = 6;</code>
        */
       public boolean hasViewIndexId() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>required int32 viewIndexId = 6;</code>
+       * <code>required int64 viewIndexId = 6;</code>
        */
-      public int getViewIndexId() {
+      public long getViewIndexId() {
         return viewIndexId_;
       }
       /**
-       * <code>required int32 viewIndexId = 6;</code>
+       * <code>required int64 viewIndexId = 6;</code>
        */
-      public Builder setViewIndexId(int value) {
+      public Builder setViewIndexId(long value) {
         bitField0_ |= 0x00000020;
         viewIndexId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 viewIndexId = 6;</code>
+       * <code>required int64 viewIndexId = 6;</code>
        */
       public Builder clearViewIndexId() {
         bitField0_ = (bitField0_ & ~0x00000020);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         onChanged();
         return this;
       }
@@ -1707,15 +1707,15 @@ public final class MetaDataProtos {
      */
     long getAutoPartitionNum();
 
-    // optional int32 viewIndexId = 12;
+    // optional int64 viewIndexId = 12;
     /**
-     * <code>optional int32 viewIndexId = 12;</code>
+     * <code>optional int64 viewIndexId = 12;</code>
      */
     boolean hasViewIndexId();
     /**
-     * <code>optional int32 viewIndexId = 12;</code>
+     * <code>optional int64 viewIndexId = 12;</code>
      */
-    int getViewIndexId();
+    long getViewIndexId();
   }
   /**
    * Protobuf type {@code MetaDataResponse}
@@ -1856,7 +1856,7 @@ public final class MetaDataProtos {
             }
             case 96: {
               bitField0_ |= 0x00000100;
-              viewIndexId_ = input.readInt32();
+              viewIndexId_ = input.readInt64();
               break;
             }
           }
@@ -2143,19 +2143,19 @@ public final class MetaDataProtos {
       return autoPartitionNum_;
     }
 
-    // optional int32 viewIndexId = 12;
+    // optional int64 viewIndexId = 12;
     public static final int VIEWINDEXID_FIELD_NUMBER = 12;
-    private int viewIndexId_;
+    private long viewIndexId_;
     /**
-     * <code>optional int32 viewIndexId = 12;</code>
+     * <code>optional int64 viewIndexId = 12;</code>
      */
     public boolean hasViewIndexId() {
       return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional int32 viewIndexId = 12;</code>
+     * <code>optional int64 viewIndexId = 12;</code>
      */
-    public int getViewIndexId() {
+    public long getViewIndexId() {
       return viewIndexId_;
     }
 
@@ -2171,7 +2171,7 @@ public final class MetaDataProtos {
       sharedTablesToDelete_ = java.util.Collections.emptyList();
       schema_ = org.apache.phoenix.coprocessor.generated.PSchemaProtos.PSchema.getDefaultInstance();
       autoPartitionNum_ = 0L;
-      viewIndexId_ = 0;
+      viewIndexId_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2243,7 +2243,7 @@ public final class MetaDataProtos {
         output.writeInt64(11, autoPartitionNum_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt32(12, viewIndexId_);
+        output.writeInt64(12, viewIndexId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2305,7 +2305,7 @@ public final class MetaDataProtos {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(12, viewIndexId_);
+          .computeInt64Size(12, viewIndexId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2440,7 +2440,7 @@ public final class MetaDataProtos {
       }
       if (hasViewIndexId()) {
         hash = (37 * hash) + VIEWINDEXID_FIELD_NUMBER;
-        hash = (53 * hash) + getViewIndexId();
+        hash = (53 * hash) + hashLong(getViewIndexId());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -2593,7 +2593,7 @@ public final class MetaDataProtos {
         bitField0_ = (bitField0_ & ~0x00000200);
         autoPartitionNum_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000400);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
@@ -3842,35 +3842,35 @@ public final class MetaDataProtos {
         return this;
       }
 
-      // optional int32 viewIndexId = 12;
-      private int viewIndexId_ ;
+      // optional int64 viewIndexId = 12;
+      private long viewIndexId_ ;
       /**
-       * <code>optional int32 viewIndexId = 12;</code>
+       * <code>optional int64 viewIndexId = 12;</code>
        */
       public boolean hasViewIndexId() {
         return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
-       * <code>optional int32 viewIndexId = 12;</code>
+       * <code>optional int64 viewIndexId = 12;</code>
        */
-      public int getViewIndexId() {
+      public long getViewIndexId() {
         return viewIndexId_;
       }
       /**
-       * <code>optional int32 viewIndexId = 12;</code>
+       * <code>optional int64 viewIndexId = 12;</code>
        */
-      public Builder setViewIndexId(int value) {
+      public Builder setViewIndexId(long value) {
         bitField0_ |= 0x00000800;
         viewIndexId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 viewIndexId = 12;</code>
+       * <code>optional int64 viewIndexId = 12;</code>
        */
       public Builder clearViewIndexId() {
         bitField0_ = (bitField0_ & ~0x00000800);
-        viewIndexId_ = 0;
+        viewIndexId_ = 0L;
         onChanged();
         return this;
       }
@@ -17060,7 +17060,7 @@ public final class MetaDataProtos {
       "TableState\022\020\n\010tenantId\030\001 \001(\014\022\022\n\nschemaNa" +
       "me\030\002 \002(\014\022\021\n\ttableName\030\003 \002(\014\022\031\n\007columns\030\004" +
       " \003(\0132\010.PColumn\022\025\n\rphysicalNames\030\005 \003(\014\022\023\n" +
-      "\013viewIndexId\030\006 \002(\005\"\321\002\n\020MetaDataResponse\022" +
+      "\013viewIndexId\030\006 \002(\003\"\321\002\n\020MetaDataResponse\022" +
       "!\n\nreturnCode\030\001 \001(\0162\r.MutationCode\022\024\n\014mu" +
       "tationTime\030\002 \001(\003\022\026\n\005table\030\003 \001(\0132\007.PTable" +
       "\022\026\n\016tablesToDelete\030\004 \003(\014\022\022\n\ncolumnName\030\005" +
@@ -17068,7 +17068,7 @@ public final class MetaDataProtos {
       "\030\007 \001(\014\022\034\n\010function\030\010 \003(\0132\n.PFunction\022/\n\024" +
       "sharedTablesToDelete\030\t \003(\0132\021.SharedTable" +
       "State\022\030\n\006schema\030\n \001(\0132\010.PSchema\022\030\n\020autoP" +
-      "artitionNum\030\013 \001(\003\022\023\n\013viewIndexId\030\014 \001(\005\"\222" +
+      "artitionNum\030\013 \001(\003\022\023\n\013viewIndexId\030\014 \001(\003\"\222" +
       "\001\n\017GetTableRequest\022\020\n\010tenantId\030\001 \002(\014\022\022\n\n" +
       "schemaName\030\002 \002(\014\022\021\n\ttableName\030\003 \002(\014\022\026\n\016t" +
       "ableTimestamp\030\004 \002(\003\022\027\n\017clientTimestamp\030\005" +
