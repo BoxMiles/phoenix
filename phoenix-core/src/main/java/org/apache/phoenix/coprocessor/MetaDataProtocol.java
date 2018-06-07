@@ -157,14 +157,16 @@ public abstract class MetaDataProtocol extends MetaDataService {
         private PName tableName;
         private List<PColumn> columns;
         private List<PName> physicalNames;
+        private PTable.ViewIndexIdEncodingScheme viewIndexIdEncodingScheme;
         private Long viewIndexId;
-        
+
         public SharedTableState(PTable table) {
             this.tenantId = table.getTenantId();
             this.schemaName = table.getSchemaName();
             this.tableName = table.getTableName();
             this.columns = table.getColumns();
             this.physicalNames = table.getPhysicalNames();
+            this.viewIndexIdEncodingScheme = table.getViewIndexIdEncodingScheme();
             this.viewIndexId = table.getViewIndexId();
         }
         
@@ -187,6 +189,8 @@ public abstract class MetaDataProtocol extends MetaDataService {
                     return PNameFactory.newName(physicalName.toByteArray());
                 }
             });
+            this.viewIndexIdEncodingScheme = PTable.ViewIndexIdEncodingScheme.fromSerializedValue(
+               (byte)sharedTable.getViewIndexIdEncodingScheme());
             this.viewIndexId = sharedTable.getViewIndexId();
         }
 
@@ -210,7 +214,11 @@ public abstract class MetaDataProtocol extends MetaDataService {
             return physicalNames;
         }
 
-        public Long getViewIndexId() {
+        public PTable.ViewIndexIdEncodingScheme getViewIndexIdEncodingScheme() {
+            return viewIndexIdEncodingScheme;
+        }
+
+      public Long getViewIndexId() {
             return viewIndexId;
         }
         

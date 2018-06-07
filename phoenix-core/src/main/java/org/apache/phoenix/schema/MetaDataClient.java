@@ -87,6 +87,7 @@ import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.TYPE;
 import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.UPDATE_CACHE_FREQUENCY;
 import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.USE_STATS_FOR_PARALLELIZATION;
 import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.VIEW_CONSTANT;
+import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.VIEW_INDEX_ID_ENCODING_SCHEME;
 import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.VIEW_STATEMENT;
 import static org.apache.phoenix.jdbc.PhoenixDatabaseMetaData.VIEW_TYPE;
 import static org.apache.phoenix.query.QueryConstants.BASE_TABLE_BASE_COLUMN_COUNT;
@@ -98,6 +99,7 @@ import static org.apache.phoenix.schema.PTable.EncodedCQCounter.NULL_COUNTER;
 import static org.apache.phoenix.schema.PTable.ImmutableStorageScheme.ONE_CELL_PER_COLUMN;
 import static org.apache.phoenix.schema.PTable.ImmutableStorageScheme.SINGLE_CELL_ARRAY_WITH_OFFSETS;
 import static org.apache.phoenix.schema.PTable.QualifierEncodingScheme.NON_ENCODED_QUALIFIERS;
+import static org.apache.phoenix.schema.PTable.ViewIndexIdEncodingScheme;
 import static org.apache.phoenix.schema.PTable.ViewType.MAPPED;
 import static org.apache.phoenix.schema.PTableType.TABLE;
 import static org.apache.phoenix.schema.PTableType.VIEW;
@@ -288,8 +290,9 @@ public class MetaDataClient {
                     GUIDE_POSTS_WIDTH + "," +
                     IMMUTABLE_STORAGE_SCHEME + "," +
                     ENCODING_SCHEME + "," +
-                    USE_STATS_FOR_PARALLELIZATION +
-                    ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    USE_STATS_FOR_PARALLELIZATION + "," +
+                    VIEW_INDEX_ID_ENCODING_SCHEME +
+                    ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String CREATE_SCHEMA = "UPSERT INTO " + SYSTEM_CATALOG_SCHEMA + ".\"" + SYSTEM_CATALOG_TABLE
             + "\"( " + TABLE_SCHEM + "," + TABLE_NAME + ") VALUES (?,?)";
@@ -526,7 +529,7 @@ public class MetaDataClient {
 
     /**
      * Update the cache with the latest as of the connection scn.
-     * @param functioNames
+     * @param functionNames
      * @return the timestamp from the server, negative if the function was added to the cache and positive otherwise
      * @throws SQLException
      */
@@ -1830,6 +1833,7 @@ public class MetaDataClient {
                     : parent.isNamespaceMapped();
             boolean isLocalIndex = indexType == IndexType.LOCAL;
             QualifierEncodingScheme encodingScheme = NON_ENCODED_QUALIFIERS;
+            ViewIndexIdEncodingScheme viewIndexIdEncodingScheme = ViewIndexIdEncodingScheme.TWO_BYTE_VIEW_INDEX_IDS;
             ImmutableStorageScheme immutableStorageScheme = ONE_CELL_PER_COLUMN;
             if (parent != null && tableType == PTableType.INDEX) {
                 timestamp = TransactionUtil.getTableTimestamp(connection, transactional);
@@ -1936,7 +1940,7 @@ public class MetaDataClient {
 
             // Can't set MULTI_TENANT or DEFAULT_COLUMN_FAMILY_NAME on an INDEX or a non mapped VIEW
             if (tableType != PTableType.INDEX && (tableType != PTableType.VIEW || viewType == ViewType.MAPPED)) {
-                Boolean multiTenantProp = (Boolean) tableProps.get(PhoenixDatabaseMetaData.MULTI_TENANT);
+                Boolean multiTenantProp = (Boolean) tableProps.get(MULTI_TENANT);
                 multiTenant = Boolean.TRUE.equals(multiTenantProp);
                 defaultFamilyName = (String)TableProperty.DEFAULT_COLUMN_FAMILY.getValue(tableProps);
             }
@@ -1967,7 +1971,7 @@ public class MetaDataClient {
                     storeNulls = connection.getQueryServices().getProps().getBoolean(
                                     QueryServices.DEFAULT_STORE_NULLS_ATTRIB,
                                     QueryServicesOptions.DEFAULT_STORE_NULLS);
-                    tableProps.put(PhoenixDatabaseMetaData.STORE_NULLS, Boolean.valueOf(storeNulls));
+                    tableProps.put(STORE_NULLS, Boolean.valueOf(storeNulls));
                 }
             } else {
                 storeNulls = storeNullsProp;
@@ -2005,7 +2009,7 @@ public class MetaDataClient {
 
             // Put potentially inferred value into tableProps as it's used by the createTable call below
             // to determine which coprocessors to install on the new table.
-            tableProps.put(PhoenixDatabaseMetaData.TRANSACTIONAL, transactional);
+            tableProps.put(TRANSACTIONAL, transactional);
             if (transactional) {
                 // If TTL set, use Tephra TTL property name instead
                 Object ttl = commonFamilyProps.remove(HColumnDescriptor.TTL);
@@ -2033,7 +2037,7 @@ public class MetaDataClient {
                 }
                 // Force STORE_NULLS to true when transactional as Tephra cannot deal with column deletes
                 storeNulls = true;
-                tableProps.put(PhoenixDatabaseMetaData.STORE_NULLS, Boolean.TRUE);
+                tableProps.put(STORE_NULLS, Boolean.TRUE);
 
                 if (!sharedTable) {
                     Integer maxVersionsProp = (Integer) commonFamilyProps.get(HConstants.VERSIONS);
@@ -2057,7 +2061,7 @@ public class MetaDataClient {
 
             // Delay this check as it is supported to have IMMUTABLE_ROWS and SALT_BUCKETS defined on views
             if (sharedTable) {
-                if (tableProps.get(PhoenixDatabaseMetaData.DEFAULT_COLUMN_FAMILY_NAME) != null) {
+                if (tableProps.get(DEFAULT_COLUMN_FAMILY_NAME) != null) {
                     throw new SQLExceptionInfo.Builder(SQLExceptionCode.DEFAULT_COLUMN_FAMILY_ON_SHARED_TABLE)
                     .setSchemaName(schemaName).setTableName(tableName)
                     .build().buildException();
@@ -2206,6 +2210,7 @@ public class MetaDataClient {
 					if (EncodedColumnsUtil.usesEncodedColumnNames(viewPhysicalTable)) {
                         cqCounter  = viewPhysicalTable.getEncodedCQCounter();
                     }
+                    viewIndexIdEncodingScheme = viewPhysicalTable.getViewIndexIdEncodingScheme();
                 }
             }
             // System tables have hard-coded column qualifiers. So we can't use column encoding for them.
@@ -2264,6 +2269,11 @@ public class MetaDataClient {
                     } 
                 }
                 cqCounter = encodingScheme != NON_ENCODED_QUALIFIERS ? new EncodedCQCounter() : NULL_COUNTER;
+                Byte viewIndexIdEncodingSchemeSerializedByte = (Byte) TableProperty.VIEW_INDEX_ID_BYTES.getValue(tableProps);
+                viewIndexIdEncodingScheme =
+                    viewIndexIdEncodingSchemeSerializedByte == null ?
+                        ViewIndexIdEncodingScheme.EIGHT_BYTE_VIEW_INDEX_IDS :
+                        ViewIndexIdEncodingScheme.fromSerializedValue(viewIndexIdEncodingSchemeSerializedByte);
             }
 
             Map<String, Integer> changedCqCounters = new HashMap<>(colDefs.size());
@@ -2436,7 +2446,7 @@ public class MetaDataClient {
                         Collections.<PTable>emptyList(), isImmutableRows,
                         Collections.<PName>emptyList(), defaultFamilyName == null ? null :
                                 PNameFactory.newName(defaultFamilyName), null,
-                        Boolean.TRUE.equals(disableWAL), false, false, null, null, indexType, true, false, 0, 0L, isNamespaceMapped, autoPartitionSeq, isAppendOnlySchema, ONE_CELL_PER_COLUMN, NON_ENCODED_QUALIFIERS, PTable.EncodedCQCounter.NULL_COUNTER, true);
+                        Boolean.TRUE.equals(disableWAL), false, false, null, null, null, indexType, true, false, 0, 0L, isNamespaceMapped, autoPartitionSeq, isAppendOnlySchema, ONE_CELL_PER_COLUMN, NON_ENCODED_QUALIFIERS, PTable.EncodedCQCounter.NULL_COUNTER, true);
                 connection.addTable(table, MetaDataProtocol.MIN_TABLE_TIMESTAMP);
             }
             
@@ -2597,6 +2607,7 @@ public class MetaDataClient {
             } else {
                 tableUpsert.setBoolean(28, useStatsForParallelizationProp);
             }
+            tableUpsert.setByte(29, viewIndexIdEncodingScheme.getSerializedMetadataValue());
             tableUpsert.execute();
 
             if (asyncCreatedDate != null) {
@@ -2700,7 +2711,7 @@ public class MetaDataClient {
                         tenantId, newSchemaName, PNameFactory.newName(tableName), tableType, indexState, timestamp!=null ? timestamp : result.getMutationTime(),
                         PTable.INITIAL_SEQ_NUM, pkName == null ? null : PNameFactory.newName(pkName), saltBucketNum, columns.values(),
                         parent == null ? null : parent.getSchemaName(), parent == null ? null : parent.getTableName(), Collections.<PTable>emptyList(), isImmutableRows,
-                        physicalNames, defaultFamilyName == null ? null : PNameFactory.newName(defaultFamilyName), viewStatement, Boolean.TRUE.equals(disableWAL), multiTenant, storeNulls, viewType,
+                        physicalNames, defaultFamilyName == null ? null : PNameFactory.newName(defaultFamilyName), viewStatement, Boolean.TRUE.equals(disableWAL), multiTenant, storeNulls, viewType, viewIndexIdEncodingScheme,
                         result.getViewIndexId(), indexType, rowKeyOrderOptimizable, transactional, updateCacheFrequency, 0L, isNamespaceMapped, autoPartitionSeq, isAppendOnlySchema, immutableStorageScheme, encodingScheme, cqCounterToBe, useStatsForParallelizationProp);
                 result = new MetaDataMutationResult(code, result.getMutationTime(), table, true);
                 addTableToCache(result);
@@ -2885,7 +2896,8 @@ public class MetaDataClient {
                                 PTable viewIndexTable = new PTableImpl(null,
                                         SchemaUtil.getSchemaNameFromFullName(viewIndexPhysicalName),
                                         SchemaUtil.getTableNameFromFullName(viewIndexPhysicalName), ts,
-                                        table.getColumnFamilies(),table.isNamespaceMapped(), table.getImmutableStorageScheme(), table.getEncodingScheme(), table.useStatsForParallelization());
+                                        table.getColumnFamilies(),table.isNamespaceMapped(), table.getImmutableStorageScheme(),
+                                        table.getEncodingScheme(), table.getViewIndexIdEncodingScheme(), table.useStatsForParallelization());
                                 tableRefs.add(new TableRef(null, viewIndexTable, ts, false));
                             }
                         }
@@ -3218,8 +3230,8 @@ public class MetaDataClient {
                 if (numCols > 0 ) {
                     StatementContext context = new StatementContext(new PhoenixStatement(connection), resolver);
                     String addColumnSqlToUse = connection.isRunningUpgrade()
-                            && tableName.equals(PhoenixDatabaseMetaData.SYSTEM_CATALOG_TABLE)
-                            && schemaName.equals(PhoenixDatabaseMetaData.SYSTEM_CATALOG_SCHEMA) ? ALTER_SYSCATALOG_TABLE_UPGRADE
+                            && tableName.equals(SYSTEM_CATALOG_TABLE)
+                            && schemaName.equals(SYSTEM_CATALOG_SCHEMA) ? ALTER_SYSCATALOG_TABLE_UPGRADE
                             : INSERT_COLUMN_ALTER_TABLE;
                     try (PreparedStatement colUpsert = connection.prepareStatement(addColumnSqlToUse)) {
                         short nextKeySeq = SchemaUtil.getMaxKeySeq(table);
@@ -3447,7 +3459,8 @@ public class MetaDataClient {
                             PTable viewIndexTable = new PTableImpl(null,
                                     SchemaUtil.getSchemaNameFromFullName(viewIndexPhysicalName),
                                     SchemaUtil.getTableNameFromFullName(viewIndexPhysicalName), ts,
-                                    table.getColumnFamilies(), table.isNamespaceMapped(), table.getImmutableStorageScheme(), table.getEncodingScheme(), table.useStatsForParallelization());
+                                    table.getColumnFamilies(), table.isNamespaceMapped(), table.getImmutableStorageScheme(),
+                                    table.getEncodingScheme(), table.getViewIndexIdEncodingScheme(), table.useStatsForParallelization());
                             List<TableRef> tableRefs = Collections.singletonList(new TableRef(null, viewIndexTable, ts, false));
                             MutationPlan plan = new PostDDLCompiler(connection).compile(tableRefs, null, null,
                                     Collections.<PColumn> emptyList(), ts);
@@ -3711,7 +3724,7 @@ public class MetaDataClient {
                                 PTableImpl viewIndexTable = new PTableImpl(sharedTableState.getTenantId(),
                                         sharedTableState.getSchemaName(), sharedTableState.getTableName(), ts,
                                         table.getColumnFamilies(), sharedTableState.getColumns(),
-                                        sharedTableState.getPhysicalNames(), sharedTableState.getViewIndexId(),
+                                        sharedTableState.getPhysicalNames(), sharedTableState.getViewIndexIdEncodingScheme(), sharedTableState.getViewIndexId(),
                                         table.isMultiTenant(), table.isNamespaceMapped(), table.getImmutableStorageScheme(), table.getEncodingScheme(), table.getEncodedCQCounter(), table.useStatsForParallelization());
                                 TableRef indexTableRef = new TableRef(viewIndexTable);
                                 PName indexTableTenantId = sharedTableState.getTenantId();
@@ -4194,7 +4207,7 @@ public class MetaDataClient {
                     Object value = tableProp.getValue(prop.getSecond());
                     if (propName.equals(PTable.IS_IMMUTABLE_ROWS_PROP_NAME)) {
                         metaProperties.setImmutableRowsProp((Boolean)value);
-                    } else if (propName.equals(PhoenixDatabaseMetaData.MULTI_TENANT)) {
+                    } else if (propName.equals(MULTI_TENANT)) {
                         metaProperties.setMultiTenantProp((Boolean)value);
                     } else if (propName.equals(DISABLE_WAL)) {
                         metaProperties.setDisableWALProp((Boolean)value);

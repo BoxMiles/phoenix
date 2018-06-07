@@ -59,6 +59,7 @@ message SharedTableState {
   repeated PColumn columns = 4;  
   repeated bytes physicalNames = 5;
   required int64 viewIndexId = 6;
+  optional int64 viewIndexIdEncodingScheme = 7;
 }
 
 message MetaDataResponse {

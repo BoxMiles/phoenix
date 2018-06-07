@@ -3520,6 +3520,16 @@ public final class PTableProtos {
      * <code>optional bool useStatsForParallelization = 37;</code>
      */
     boolean getUseStatsForParallelization();
+
+    // optional bytes viewIndexIdEncodingScheme = 38;
+    /**
+     * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+     */
+    boolean hasViewIndexIdEncodingScheme();
+    /**
+     * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+     */
+    com.google.protobuf.ByteString getViewIndexIdEncodingScheme();
   }
   /**
    * Protobuf type {@code PTable}
@@ -3771,6 +3781,11 @@ public final class PTableProtos {
               useStatsForParallelization_ = input.readBool();
               break;
             }
+            case 306: {
+              bitField1_ |= 0x00000001;
+              viewIndexIdEncodingScheme_ = input.readBytes();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -3823,6 +3838,7 @@ public final class PTableProtos {
     }
 
     private int bitField0_;
+    private int bitField1_;
     // required bytes schemaNameBytes = 1;
     public static final int SCHEMANAMEBYTES_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString schemaNameBytes_;
@@ -4534,6 +4550,22 @@ public final class PTableProtos {
       return useStatsForParallelization_;
     }
 
+    // optional bytes viewIndexIdEncodingScheme = 38;
+    public static final int VIEWINDEXIDENCODINGSCHEME_FIELD_NUMBER = 38;
+    private com.google.protobuf.ByteString viewIndexIdEncodingScheme_;
+    /**
+     * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+     */
+    public boolean hasViewIndexIdEncodingScheme() {
+      return ((bitField1_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+     */
+    public com.google.protobuf.ByteString getViewIndexIdEncodingScheme() {
+      return viewIndexIdEncodingScheme_;
+    }
+
     private void initFields() {
       schemaNameBytes_ = com.google.protobuf.ByteString.EMPTY;
       tableNameBytes_ = com.google.protobuf.ByteString.EMPTY;
@@ -4571,6 +4603,7 @@ public final class PTableProtos {
       encodingScheme_ = com.google.protobuf.ByteString.EMPTY;
       encodedCQCounters_ = java.util.Collections.emptyList();
       useStatsForParallelization_ = false;
+      viewIndexIdEncodingScheme_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4746,6 +4779,9 @@ public final class PTableProtos {
       if (((bitField0_ & 0x80000000) == 0x80000000)) {
         output.writeBool(37, useStatsForParallelization_);
       }
+      if (((bitField1_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(38, viewIndexIdEncodingScheme_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4903,6 +4939,10 @@ public final class PTableProtos {
       if (((bitField0_ & 0x80000000) == 0x80000000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(37, useStatsForParallelization_);
+      }
+      if (((bitField1_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(38, viewIndexIdEncodingScheme_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5095,6 +5135,11 @@ public final class PTableProtos {
         result = result && (getUseStatsForParallelization()
             == other.getUseStatsForParallelization());
       }
+      result = result && (hasViewIndexIdEncodingScheme() == other.hasViewIndexIdEncodingScheme());
+      if (hasViewIndexIdEncodingScheme()) {
+        result = result && getViewIndexIdEncodingScheme()
+            .equals(other.getViewIndexIdEncodingScheme());
+      }
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -5251,6 +5296,10 @@ public final class PTableProtos {
       if (hasUseStatsForParallelization()) {
         hash = (37 * hash) + USESTATSFORPARALLELIZATION_FIELD_NUMBER;
         hash = (53 * hash) + hashBoolean(getUseStatsForParallelization());
+      }
+      if (hasViewIndexIdEncodingScheme()) {
+        hash = (37 * hash) + VIEWINDEXIDENCODINGSCHEME_FIELD_NUMBER;
+        hash = (53 * hash) + getViewIndexIdEncodingScheme().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -5448,6 +5497,8 @@ public final class PTableProtos {
         }
         useStatsForParallelization_ = false;
         bitField1_ = (bitField1_ & ~0x00000008);
+        viewIndexIdEncodingScheme_ = com.google.protobuf.ByteString.EMPTY;
+        bitField1_ = (bitField1_ & ~0x00000010);
         return this;
       }
 
@@ -5477,6 +5528,7 @@ public final class PTableProtos {
         int from_bitField0_ = bitField0_;
         int from_bitField1_ = bitField1_;
         int to_bitField0_ = 0;
+        int to_bitField1_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
@@ -5637,7 +5689,12 @@ public final class PTableProtos {
           to_bitField0_ |= 0x80000000;
         }
         result.useStatsForParallelization_ = useStatsForParallelization_;
+        if (((from_bitField1_ & 0x00000010) == 0x00000010)) {
+          to_bitField1_ |= 0x00000001;
+        }
+        result.viewIndexIdEncodingScheme_ = viewIndexIdEncodingScheme_;
         result.bitField0_ = to_bitField0_;
+        result.bitField1_ = to_bitField1_;
         onBuilt();
         return result;
       }
@@ -5840,6 +5897,9 @@ public final class PTableProtos {
         }
         if (other.hasUseStatsForParallelization()) {
           setUseStatsForParallelization(other.getUseStatsForParallelization());
+        }
+        if (other.hasViewIndexIdEncodingScheme()) {
+          setViewIndexIdEncodingScheme(other.getViewIndexIdEncodingScheme());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7920,6 +7980,42 @@ public final class PTableProtos {
         return this;
       }
 
+      // optional bytes viewIndexIdEncodingScheme = 38;
+      private com.google.protobuf.ByteString viewIndexIdEncodingScheme_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+       */
+      public boolean hasViewIndexIdEncodingScheme() {
+        return ((bitField1_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+       */
+      public com.google.protobuf.ByteString getViewIndexIdEncodingScheme() {
+        return viewIndexIdEncodingScheme_;
+      }
+      /**
+       * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+       */
+      public Builder setViewIndexIdEncodingScheme(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField1_ |= 0x00000010;
+        viewIndexIdEncodingScheme_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes viewIndexIdEncodingScheme = 38;</code>
+       */
+      public Builder clearViewIndexIdEncodingScheme() {
+        bitField1_ = (bitField1_ & ~0x00000010);
+        viewIndexIdEncodingScheme_ = getDefaultInstance().getViewIndexIdEncodingScheme();
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:PTable)
     }
 
@@ -8587,7 +8683,7 @@ public final class PTableProtos {
       "\"\232\001\n\013PTableStats\022\013\n\003key\030\001 \002(\014\022\016\n\006values\030",
       "\002 \003(\014\022\033\n\023guidePostsByteCount\030\003 \001(\003\022\025\n\rke" +
       "yBytesCount\030\004 \001(\003\022\027\n\017guidePostsCount\030\005 \001" +
-      "(\005\022!\n\013pGuidePosts\030\006 \001(\0132\014.PGuidePosts\"\220\007" +
+      "(\005\022!\n\013pGuidePosts\030\006 \001(\0132\014.PGuidePosts\"\263\007" +
       "\n\006PTable\022\027\n\017schemaNameBytes\030\001 \002(\014\022\026\n\016tab" +
       "leNameBytes\030\002 \002(\014\022\036\n\ttableType\030\003 \002(\0162\013.P" +
       "TableType\022\022\n\nindexState\030\004 \001(\t\022\026\n\016sequenc" +
@@ -8610,12 +8706,13 @@ public final class PTableProtos {
       "\n\017parentNameBytes\030! \001(\014\022\025\n\rstorageScheme" +
       "\030\" \001(\014\022\026\n\016encodingScheme\030# \001(\014\022,\n\021encode" +
       "dCQCounters\030$ \003(\0132\021.EncodedCQCounter\022\"\n\032" +
-      "useStatsForParallelization\030% \001(\010\"6\n\020Enco" +
-      "dedCQCounter\022\021\n\tcolFamily\030\001 \002(\t\022\017\n\007count" +
-      "er\030\002 \002(\005*A\n\nPTableType\022\n\n\006SYSTEM\020\000\022\010\n\004US" +
-      "ER\020\001\022\010\n\004VIEW\020\002\022\t\n\005INDEX\020\003\022\010\n\004JOIN\020\004B@\n(o" +
-      "rg.apache.phoenix.coprocessor.generatedB",
-      "\014PTableProtosH\001\210\001\001\240\001\001"
+      "useStatsForParallelization\030% \001(\010\022!\n\031view" +
+      "IndexIdEncodingScheme\030& \001(\014\"6\n\020EncodedCQ" +
+      "Counter\022\021\n\tcolFamily\030\001 \002(\t\022\017\n\007counter\030\002 " +
+      "\002(\005*A\n\nPTableType\022\n\n\006SYSTEM\020\000\022\010\n\004USER\020\001\022" +
+      "\010\n\004VIEW\020\002\022\t\n\005INDEX\020\003\022\010\n\004JOIN\020\004B@\n(org.ap",
+      "ache.phoenix.coprocessor.generatedB\014PTab" +
+      "leProtosH\001\210\001\001\240\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -8639,7 +8736,7 @@ public final class PTableProtos {
           internal_static_PTable_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_PTable_descriptor,
-              new java.lang.String[] { "SchemaNameBytes", "TableNameBytes", "TableType", "IndexState", "SequenceNumber", "TimeStamp", "PkNameBytes", "BucketNum", "Columns", "Indexes", "IsImmutableRows", "DataTableNameBytes", "DefaultFamilyName", "DisableWAL", "MultiTenant", "ViewType", "ViewStatement", "PhysicalNames", "TenantId", "ViewIndexId", "IndexType", "StatsTimeStamp", "StoreNulls", "BaseColumnCount", "RowKeyOrderOptimizable", "Transactional", "UpdateCacheFrequency", "IndexDisableTimestamp", "IsNamespaceMapped", "AutoParititonSeqName", "IsAppendOnlySchema", "ParentNameBytes", "StorageScheme", "EncodingScheme", "EncodedCQCounters", "UseStatsForParallelization", });
+              new java.lang.String[] { "SchemaNameBytes", "TableNameBytes", "TableType", "IndexState", "SequenceNumber", "TimeStamp", "PkNameBytes", "BucketNum", "Columns", "Indexes", "IsImmutableRows", "DataTableNameBytes", "DefaultFamilyName", "DisableWAL", "MultiTenant", "ViewType", "ViewStatement", "PhysicalNames", "TenantId", "ViewIndexId", "IndexType", "StatsTimeStamp", "StoreNulls", "BaseColumnCount", "RowKeyOrderOptimizable", "Transactional", "UpdateCacheFrequency", "IndexDisableTimestamp", "IsNamespaceMapped", "AutoParititonSeqName", "IsAppendOnlySchema", "ParentNameBytes", "StorageScheme", "EncodingScheme", "EncodedCQCounters", "UseStatsForParallelization", "ViewIndexIdEncodingScheme", });
           internal_static_EncodedCQCounter_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_EncodedCQCounter_fieldAccessorTable = new

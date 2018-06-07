@@ -40,9 +40,11 @@ import org.apache.phoenix.schema.types.PArrayDataTypeDecoder;
 import org.apache.phoenix.schema.types.PArrayDataTypeEncoder;
 import org.apache.phoenix.schema.types.PDataType;
 import org.apache.phoenix.schema.types.PVarbinary;
+import org.apache.phoenix.util.EncodedColumnsUtil;
 import org.apache.phoenix.util.TrustedByteArrayOutputStream;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 
 
 /**
@@ -496,12 +498,131 @@ public interface PTable extends PMetaDataEntity {
             return number;
         }
     }
-    
+
     interface QualifierEncoderDecoder {
         byte[] encode(int value);
         int decode(byte[] bytes);
         int decode(byte[] bytes, int offset, int length);
         Integer getMaxQualifier();
+    }
+
+    enum ViewIndexIdEncodingScheme implements ViewIndexIdEncoderDecoder {
+        TWO_BYTE_VIEW_INDEX_IDS((byte)2, Short.MAX_VALUE) {
+            @Override
+            public byte[] encode(long value) {
+                if (value < 0 || value > maxViewIndexId) {
+                    throw new ViewIndexIdOutOfRangeException(maxViewIndexId);
+                }
+                return Bytes.toBytes((short)value);
+            }
+
+            @Override
+            public long decode(byte[] bytes) {
+                if (bytes.length != 2) {
+                    throw new InvalidViewIndexIdBytesException(2, bytes.length);
+                }
+                return Bytes.toShort(bytes);
+            }
+
+            @Override
+            public long decode(byte[] bytes, int offset, int length) {
+                if (bytes.length != 2) {
+                    throw new InvalidViewIndexIdBytesException(2, bytes.length);
+                }
+                return Bytes.toShort(bytes, offset, length);
+            }
+        },
+        FOUR_BYTE_VIEW_INDEX_IDS((byte)4, Integer.MAX_VALUE) {
+            @Override
+            public byte[] encode(long value) {
+                if (value < 0 || value > maxViewIndexId) {
+                    throw new ViewIndexIdOutOfRangeException(maxViewIndexId);
+                }
+                return Bytes.toBytes((int)value);
+            }
+
+            @Override
+            public long decode(byte[] bytes) {
+                if (bytes.length != 4) {
+                    throw new InvalidViewIndexIdBytesException(4, bytes.length);
+                }
+                return Bytes.toInt(bytes);
+            }
+
+            @Override
+            public long decode(byte[] bytes, int offset, int length) {
+                if (bytes.length != 4) {
+                    throw new InvalidViewIndexIdBytesException(4, bytes.length);
+                }
+                return Bytes.toInt(bytes, offset, length);
+            }
+        },
+        EIGHT_BYTE_VIEW_INDEX_IDS((byte)8, Long.MAX_VALUE) {
+            @Override
+            public byte[] encode(long value) {
+                if (value < 0 || value > maxViewIndexId) {
+                    throw new ViewIndexIdOutOfRangeException(maxViewIndexId);
+                }
+                return Bytes.toBytes(value);
+            }
+
+            @Override
+            public long decode(byte[] bytes) {
+                if (bytes.length != 8) {
+                    throw new InvalidViewIndexIdBytesException(8, bytes.length);
+                }
+                return Bytes.toLong(bytes);
+            }
+
+            @Override
+            public long decode(byte[] bytes, int offset, int length) {
+                if (bytes.length != 8) {
+                    throw new InvalidViewIndexIdBytesException(8, bytes.length);
+                }
+                return Bytes.toLong(bytes, offset, length);
+            }
+        };
+
+        final byte metadataValue;
+        final long maxViewIndexId;
+
+        public byte getSerializedMetadataValue() {
+            return this.metadataValue;
+        }
+
+        public static ViewIndexIdEncodingScheme fromSerializedValue(byte serializedValue) {
+            for (ViewIndexIdEncodingScheme scheme : values()) {
+                if (scheme.metadataValue == serializedValue) {
+                    return scheme;
+                }
+            }
+            return null;
+        }
+
+        ViewIndexIdEncodingScheme(byte serializedMetadataValue, long maxViewIndexId) {
+            this.metadataValue = serializedMetadataValue;
+            this.maxViewIndexId = maxViewIndexId;
+        }
+
+        @VisibleForTesting
+        public static class ViewIndexIdOutOfRangeException extends RuntimeException {
+            private ViewIndexIdOutOfRangeException(long maxViewIndexId) {
+                super("Too many view indexes (" + maxViewIndexId + ")");
+            }
+        }
+
+        @VisibleForTesting
+        public static class InvalidViewIndexIdBytesException extends RuntimeException {
+            private InvalidViewIndexIdBytesException(int expectedLength, int actualLength) {
+                super("Invalid number of view index ID bytes. Expected length: " + expectedLength + ". Actual: " + actualLength);
+            }
+        }
+    }
+
+    interface ViewIndexIdEncoderDecoder {
+        byte[] encode(long value);
+        long decode(byte[] bytes);
+        long decode(byte[] bytes, int offset, int length);
     }
 
     long getTimeStamp();
@@ -683,6 +804,7 @@ public interface PTable extends PMetaDataEntity {
 
     ViewType getViewType();
     String getViewStatement();
+    ViewIndexIdEncodingScheme getViewIndexIdEncodingScheme();
     Long getViewIndexId();
     PTableKey getKey();
 

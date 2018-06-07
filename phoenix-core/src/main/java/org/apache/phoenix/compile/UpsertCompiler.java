@@ -195,7 +195,7 @@ public class UpsertCompiler {
                 values[i++] = connection.getTenantId().getBytes();
             }
             if(tableRef.getTable().getViewIndexId() != null) {
-                values[i++] = PSmallint.INSTANCE.toBytes(tableRef.getTable().getViewIndexId());
+                values[i++] = MetaDataUtil.getViewIndexIdDataType().toBytes(tableRef.getTable().getViewIndexId());
             }
         }
         int rowCount = 0;

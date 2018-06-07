@@ -206,6 +206,11 @@ public class DelegateTable implements PTable {
     }
 
     @Override
+    public ViewIndexIdEncodingScheme getViewIndexIdEncodingScheme() {
+        return delegate.getViewIndexIdEncodingScheme();
+    }
+
+    @Override
     public Long getViewIndexId() {
         return delegate.getViewIndexId();
     }

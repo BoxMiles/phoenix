@@ -167,6 +167,18 @@ public enum TableProperty {
 		}	
 	    
 	},
+
+    VIEW_INDEX_ID_BYTES(PhoenixDatabaseMetaData.VIEW_INDEX_ID_ENCODING_SCHEME, COLUMN_FAMILY_NOT_ALLOWED_TABLE_PROPERTY, false, false, false) {
+        @Override
+        public Object getValue(Object value) {
+            return value == null ? null : ((Number) value).byteValue();
+        }
+
+        @Override
+        public Object getPTableValue(PTable table) {
+            return table.getViewIndexIdEncodingScheme();
+        }
+    },
     
     IMMUTABLE_STORAGE_SCHEME(PhoenixDatabaseMetaData.IMMUTABLE_STORAGE_SCHEME, COLUMN_FAMILY_NOT_ALLOWED_TABLE_PROPERTY, true, false, false) {
         @Override
